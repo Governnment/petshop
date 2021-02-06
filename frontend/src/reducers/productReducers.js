@@ -23,6 +23,9 @@ import {
   PRODUCT_TOP_REQUEST,
   PRODUCT_TOP_SUCCESS,
   PRODUCT_TOP_FAIL,
+  SELLER_PRODUCT_CREATE_REQUEST,
+  SELLER_PRODUCT_CREATE_SUCCESS,
+  SELLER_PRODUCT_CREATE_FAIL,
 } from '../constants/productConstans'
 
 export const productListReducer = (state = { products: [] }, action) => {
@@ -125,6 +128,21 @@ export const productTopRatedReducer = (state = { products: [] }, action) => {
       return { loading: false, products: action.payload }
     case PRODUCT_TOP_FAIL:
       return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
+export const sellerProductCreateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case SELLER_PRODUCT_CREATE_REQUEST:
+      return { loading: true }
+    case SELLER_PRODUCT_CREATE_SUCCESS:
+      return { loading: false, success: true, product: action.payload }
+    case SELLER_PRODUCT_CREATE_FAIL:
+      return { loading: false, error: action.payload }
+    case PRODUCT_CREATE_RESET:
+      return {}
     default:
       return state
   }

@@ -25,6 +25,9 @@ import {
   USER_UPDATE_REQUEST,
   USER_UPDATE_RESET,
   USER_UPDATE_SUCCESS,
+  SELLER_REGISTER_REQUEST,
+  SELLER_REGISTER_SUCCESS,
+  SELLER_REGISTER_FAIL,
 } from '../constants/userConstants'
 
 export const userLoginReducer = (state = {}, action) => {
@@ -49,6 +52,21 @@ export const userRegisterReducer = (state = {}, action) => {
     case USER_REGISTER_SUCCESS:
       return { loading: false, userInfo: action.payload }
     case USER_REGISTER_FAIL:
+      return { loading: false, error: action.payload }
+    case USER_LOGOUT:
+      return {}
+    default:
+      return state
+  }
+}
+
+export const sellerRegisterReducer = (state = {}, action) => {
+  switch (action.type) {
+    case SELLER_REGISTER_REQUEST:
+      return { loading: true }
+    case SELLER_REGISTER_SUCCESS:
+      return { loading: false, userInfo: action.payload }
+    case SELLER_REGISTER_FAIL:
       return { loading: false, error: action.payload }
     case USER_LOGOUT:
       return {}

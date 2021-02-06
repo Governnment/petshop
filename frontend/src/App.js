@@ -7,10 +7,6 @@ import HomeScreen from './screens/HomeScreen'
 import ProductScreen from './screens/ProductScreen'
 import CartScreen from './screens/CartScreen'
 import LoginScreen from './screens/LoginScreen'
-import RegisterSellerScreen from './screens/RegisterSellerScreen'
-import SellerVerificationScreen from './screens/SellerVerificationScreen'
-import SellerScreen from './screens/SellerScreen'
-import SellerProductEditScreen from './screens/SellerProductEditScreen'
 import ProfileScreen from './screens/ProfileScreen'
 import ShippingScreen from './screens/ShippingScreen'
 import PaymentScreen from './screens/PaymentScreen'
@@ -23,6 +19,11 @@ import ProductListScreen from './screens/ProductListScreen'
 import ProductEditScreen from './screens/ProductEditScreen'
 import SlidesListScreen from './screens/SlidesListScreen'
 import SlideEditScreen from './screens/SlideEditScreen'
+import RegisterSellerScreen from './screens/RegisterSellerScreen'
+import SellerVerificationScreen from './screens/SellerVerificationScreen'
+import SellerScreen from './screens/SellerScreen'
+import SellerProductEditScreen from './screens/SellerProductEditScreen'
+import SellerProfileScreen from './screens/SellerProfileScreen'
 
 const App = () => {
   return (
@@ -41,6 +42,10 @@ const App = () => {
             component={SellerVerificationScreen}
           />
           <Route path='/seller/seller-screen' component={SellerScreen} />
+          <Route
+            path='admin/seller-profile-screen/:id'
+            component={SellerProfileScreen}
+          />
           <Route
             path='/seller/product/:id/edit'
             component={SellerProductEditScreen}

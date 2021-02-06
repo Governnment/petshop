@@ -1,8 +1,29 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcryptjs'
 
+const reviewSchema = mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    rating: { type: Number, required: true },
+    comment: { type: String, required: true },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
+  },
+  {
+    timestamps: true,
+  }
+)
+
 const userSchema = mongoose.Schema(
   {
+    login: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     name: {
       type: String,
       required: true,
@@ -15,15 +36,6 @@ const userSchema = mongoose.Schema(
     password: {
       type: String,
       required: true,
-    },
-    temp_secret: {
-      type: String,
-      required: false,
-    },
-    isVerifyed: {
-      type: Boolean,
-      required: true,
-      default: false,
     },
     isAdmin: {
       type: Boolean,
@@ -39,6 +51,27 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       required: true,
       default: false,
+    },
+    socialMedia1: {
+      type: String,
+      required: true,
+    },
+    socialMedia2: {
+      type: String,
+      required: false,
+    },
+    socialMedia3: {
+      type: String,
+      required: false,
+    },
+    reviews: [reviewSchema],
+    description: {
+      type: String,
+      required: true,
+    },
+    experience: {
+      type: Number,
+      required: true,
     },
   },
   {

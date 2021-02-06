@@ -74,12 +74,12 @@ const ProductListScreen = ({ history, match }) => {
     <>
       <Row className='align-items-center'>
         <Col>
-          <h1>Products</h1>
+          <h1>Питомцы</h1>
         </Col>
         <Col className='text-right'>
-          <Button className='my-3' onClick={createProductHandler}>
+          {/* <Button className='my-3' onClick={createProductHandler}>
             <i className='fas fa-plus'></i> Create Product
-          </Button>
+          </Button> */}
         </Col>
       </Row>
       {loadingDelete && <Loader />}
@@ -96,11 +96,10 @@ const ProductListScreen = ({ history, match }) => {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>NAME</th>
-                <th>PRICE</th>
-                <th>CATEGORY</th>
-                <th>BRAND</th>
-                <th>In Stock</th>
+                <th>Имя</th>
+                <th>Цена</th>
+                <th>Категория</th>
+                <th>Гендер</th>
               </tr>
             </thead>
             <tbody>
@@ -110,8 +109,7 @@ const ProductListScreen = ({ history, match }) => {
                   <td>{product.name}</td>
                   <td>$ {product.price}</td>
                   <td>{product.category}</td>
-                  <td>{product.brand}</td>
-                  <td>{product.countInStock}</td>
+                  <td>{product.gender}</td>
                   <td>
                     <LinkContainer to={`/admin/product/${product._id}/edit`}>
                       <Button variant='light' className='btn-sm fit'>

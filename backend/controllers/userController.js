@@ -15,14 +15,18 @@ const authUser = asyncHandler(async (req, res) => {
   if (user && (await user.matchPassword(password))) {
     res.json({
       _id: user._id,
+      login: user.login,
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
       isSeller: user.isSeller,
       isBuyer: user.isBuyer,
-      isVerifyed: user.isVerifyed,
+      socialMedia1: user.socialMedia1,
+      socialMedia2: user.socialMedia2,
+      socialMedia3: user.socialMedia3,
+      description: user.description,
+      experience: user.experience,
       token: generateToken(user._id),
-      temp_secret: speakeasy.generateSecret,
     })
   } else {
     res.status(401)
@@ -35,9 +39,17 @@ const authUser = asyncHandler(async (req, res) => {
 //? @access   Public
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body
-
-  const temp_secret = speakeasy.generateSecret()
+  const {
+    login,
+    name,
+    email,
+    password,
+    socialMedia1,
+    socialMedia2,
+    socialMedia3,
+    description,
+    experience,
+  } = req.body
 
   const userExists = await User.findOne({ email })
 
@@ -47,23 +59,32 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const user = await User.create({
+    login,
     name,
     email,
     password,
-    temp_secret: temp_secret.base32,
+    socialMedia1,
+    socialMedia2,
+    socialMedia3,
+    description,
+    experience,
   })
 
   if (user) {
     res.status(201).json({
       _id: user._id,
+      login: user.login,
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
       isSeller: user.isSeller,
       isBuyer: user.isBuyer,
-      isVerifyed: user.isVerifyed,
+      socialMedia1: user.socialMedia1,
+      socialMedia2: user.socialMedia2,
+      socialMedia3: user.socialMedia3,
+      description: user.description,
+      experience: user.experience,
       token: generateToken(user._id),
-      secret: temp_secret.base32,
     })
   } else {
     res.status(400)

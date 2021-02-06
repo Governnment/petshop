@@ -21,6 +21,9 @@ import {
   PRODUCT_TOP_REQUEST,
   PRODUCT_TOP_SUCCESS,
   PRODUCT_TOP_FAIL,
+  SELLER_PRODUCT_CREATE_REQUEST,
+  SELLER_PRODUCT_CREATE_SUCCESS,
+  SELLER_PRODUCT_CREATE_FAIL,
 } from '../constants/productConstans'
 
 export const listProducts = (keyword = '', pageNumber = '') => async (
@@ -268,6 +271,35 @@ export const listTopProduct = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: PRODUCT_TOP_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
+
+export const sellerCreateProduct = (product) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: SELLER_PRODUCT_CREATE_REQUEST })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axios.post(`/api/products/seller`, product, config)
+
+    dispatch({ type: SELLER_PRODUCT_CREATE_SUCCESS, payload: data })
+  } catch (error) {
+    dispatch({
+      type: SELLER_PRODUCT_CREATE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

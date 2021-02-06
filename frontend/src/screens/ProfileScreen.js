@@ -60,7 +60,7 @@ const ProfileScreen = ({ location, history }) => {
   return (
     <Row>
       <Col md={3}>
-        <h2>User Profile</h2>
+        <h2>Профиль</h2>
         {message && <Message variant='danger'>{message}</Message>}
         {}
         {success && <Message variant='success'>Profile Updated</Message>}
@@ -71,47 +71,47 @@ const ProfileScreen = ({ location, history }) => {
         ) : (
           <Form onSubmit={submitHandler}>
             <Form.Group controlId='name'>
-              <Form.Label>Name</Form.Label>
+              <Form.Label>Имя</Form.Label>
               <Form.Control
                 type='name'
-                placeholder='Enter name'
+                placeholder='Введите имя'
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               ></Form.Control>
             </Form.Group>
 
             <Form.Group controlId='email'>
-              <Form.Label>Email Address</Form.Label>
+              <Form.Label>Email</Form.Label>
               <Form.Control
                 type='email'
-                placeholder='Enter email'
+                placeholder='Введите email'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               ></Form.Control>
             </Form.Group>
 
             <Form.Group controlId='password'>
-              <Form.Label>Password</Form.Label>
+              <Form.Label>Пароль</Form.Label>
               <Form.Control
                 type='password'
-                placeholder='Enter password'
+                placeholder='Введите пароль'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               ></Form.Control>
             </Form.Group>
 
             <Form.Group controlId='confirmPassword'>
-              <Form.Label>Confirm Password</Form.Label>
+              <Form.Label>Подтвердить пароль</Form.Label>
               <Form.Control
                 type='password'
-                placeholder='Confirm password'
+                placeholder='Подтвердите пароль'
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               ></Form.Control>
             </Form.Group>
 
             <Button type='submit' variant='primary'>
-              Update
+              Обновить
             </Button>
           </Form>
         )}
@@ -168,7 +168,7 @@ const ProfileScreen = ({ location, history }) => {
         )}
       </Col>*/}
       <Col md={9}>
-        <h2>My Reviews</h2>
+        <h2>Отзывы</h2>
 
         {product.reviews.map((review) => (
           <ListGroup.Item key={review._id} className='list-group-item-dark'>

@@ -74,7 +74,7 @@ const ProductScreen = ({ history, match }) => {
   return (
     <>
       <Link to='/' className='btn btn-light my-3 btn-back'>
-        Back
+        Назад
       </Link>
       {loading ? (
         <Loader />
@@ -99,17 +99,17 @@ const ProductScreen = ({ history, match }) => {
                 <ListGroup.Item className='list-group-item-dark m-1'>
                   <Rating
                     value={product.rating}
-                    text={`${product.numReviews} reviews`}
+                    text={`${product.numReviews} рейтинг продавца`}
                   />
                 </ListGroup.Item>
                 <ListGroup.Item className='list-group-item-dark m-1 product-details-price'>
-                  Price: ${product.price}
+                  Цена: ${product.price}
                 </ListGroup.Item>
                 <ListGroup.Item className='list-group-item-dark m-1 product-details-description'>
-                  Description: {product.description}
+                  Описание: {product.description}
                 </ListGroup.Item>
                 <ListGroup.Item className='list-group-item-dark m-1 product-details-description'>
-                  Price: {product.price}
+                  Гендер: {product.gender}
                 </ListGroup.Item>
               </ListGroup>
             </Col>
@@ -180,7 +180,7 @@ const ProductScreen = ({ history, match }) => {
                         type='button'
                         variant='warning'
                       >
-                        <i className='fas fa-pen'></i> Edit
+                        <i className='fas fa-pen'></i> Редактировать
                       </Button>
                     </LinkContainer>
                     <Button
@@ -189,16 +189,16 @@ const ProductScreen = ({ history, match }) => {
                       variant='danger'
                       onClick={() => deleteHandler(product._id)}
                     >
-                      <i className='fas fa-trash'></i> Delete
+                      <i className='fas fa-trash'></i> Удалить
                     </Button>
                   </ListGroup.Item>
                 </ListGroup>
               )}
             </Col>
           </Row>
-          <Row className='product-screen-review '>
+          {/* <Row className='product-screen-review '>
             <Col md={6}>
-              <h2>Reviews</h2>
+              <h2>J</h2>
               {product.reviews.length === 0 && (
                 <>
                   <img className='w-100' src={noCommentsImg} alt='review' />
@@ -268,6 +268,7 @@ const ProductScreen = ({ history, match }) => {
               </ListGroup>
             </Col>
           </Row>
+         */}
         </>
       )}
     </>

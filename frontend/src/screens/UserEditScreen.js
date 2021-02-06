@@ -11,12 +11,17 @@ import { USER_UPDATE_RESET } from '../constants/userConstants'
 const UserEditScreen = ({ match, history }) => {
   const userId = match.params.id
 
+  const [login, setLogin] = useState('')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
   const [isSeller, setIsSeller] = useState(false)
   const [isBuyer, setIsBuyer] = useState(false)
-  const [isVerifyed, setIsVerifyed] = useState(false)
+  const [socialMedia1, setSocialMedia1] = useState('')
+  const [socialMedia2, setSocialMedia2] = useState('')
+  const [socialMedia3, setSocialMedia3] = useState('')
+  const [description, setDescription] = useState('')
+  const [experience, setExperience] = useState('')
 
   const dispatch = useDispatch()
 
@@ -38,12 +43,17 @@ const UserEditScreen = ({ match, history }) => {
       if (!user.name || user._id !== userId) {
         dispatch(getUserDetails(userId))
       } else {
+        setLogin(user.login)
         setName(user.name)
         setEmail(user.email)
         setIsAdmin(user.isAdmin)
         setIsSeller(user.isSeller)
         setIsBuyer(user.isBuyer)
-        setIsVerifyed(user.isVerifyed)
+        setSocialMedia1(user.socialMedia1)
+        setSocialMedia2(user.socialMedia2)
+        setSocialMedia3(user.socialMedia3)
+        setDescription(user.description)
+        setExperience(user.experience)
       }
     }
   }, [dispatch, history, userId, user, successUpdate])
@@ -53,12 +63,17 @@ const UserEditScreen = ({ match, history }) => {
     dispatch(
       updateUser({
         _id: userId,
+        login,
         name,
         email,
         isAdmin,
         isSeller,
         isBuyer,
-        isVerifyed,
+        socialMedia1,
+        socialMedia2,
+        socialMedia3,
+        description,
+        experience,
       })
     )
   }
@@ -69,7 +84,7 @@ const UserEditScreen = ({ match, history }) => {
         Go back
       </Link>
       <FormContainer>
-        <h1>Edit User</h1>
+        <h1>Пользователь</h1>
         {loadingUpdate && <Loader />}
         {errorUpdate && <Alert variant='danger'>{errorUpdate}</Alert>}
         {loading ? (
@@ -79,20 +94,30 @@ const UserEditScreen = ({ match, history }) => {
         ) : (
           <Form onSubmit={submitHandler}>
             <Form.Group controlId='name'>
-              <Form.Label>Name</Form.Label>
+              <Form.Label>Логин</Form.Label>
               <Form.Control
-                type='name'
+                type='text'
                 placeholder='Enter name'
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               ></Form.Control>
             </Form.Group>
 
+            <Form.Group controlId='name'>
+              <Form.Label>Имя</Form.Label>
+              <Form.Control
+                type='name'
+                placeholder='Введите имя'
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
             <Form.Group controlId='email'>
-              <Form.Label>Email addres</Form.Label>
+              <Form.Label>Почта</Form.Label>
               <Form.Control
                 type='email'
-                placeholder='Enter email'
+                placeholder='Введите почту'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               ></Form.Control>
@@ -101,7 +126,7 @@ const UserEditScreen = ({ match, history }) => {
             <Form.Group controlId='isadmin'>
               <Form.Check
                 type='checkbox'
-                label='Is Admin'
+                label='Админ'
                 checked={isAdmin}
                 onChange={(e) => setIsAdmin(e.target.checked)}
               ></Form.Check>
@@ -110,7 +135,7 @@ const UserEditScreen = ({ match, history }) => {
             <Form.Group controlId='isseller'>
               <Form.Check
                 type='checkbox'
-                label='Is Seller'
+                label='Продавец'
                 checked={isSeller}
                 onChange={(e) => setIsSeller(e.target.checked)}
               ></Form.Check>
@@ -119,23 +144,64 @@ const UserEditScreen = ({ match, history }) => {
             <Form.Group controlId='isbuyer'>
               <Form.Check
                 type='checkbox'
-                label='Is Buyer'
+                label='Покупатель'
                 checked={isBuyer}
                 onChange={(e) => setIsBuyer(e.target.checked)}
               ></Form.Check>
             </Form.Group>
 
-            <Form.Group controlId='isverifyed'>
-              <Form.Check
-                type='checkbox'
-                label='Is Verifyed'
-                checked={isVerifyed}
-                onChange={(e) => setIsVerifyed(e.target.checked)}
-              ></Form.Check>
+            <Form.Group controlId='socialMedia1'>
+              <Form.Label>Социальная сеть №1</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Введите ссылку на соц.сеть'
+                value={socialMedia1}
+                onChange={(e) => setSocialMedia1(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId='socialMedia2'>
+              <Form.Label>Социальная сеть №2</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Введите ссылку на соц.сеть'
+                value={socialMedia2}
+                onChange={(e) => setSocialMedia2(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId='socialMedia3'>
+              <Form.Label>Социальная сеть №3</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Введите ссылку на соц.сеть'
+                value={socialMedia3}
+                onChange={(e) => setSocialMedia3(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId='description'>
+              <Form.Label>Информация о продавце</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Введите ссылку на соц.сеть'
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId='experience'>
+              <Form.Label>Опыт</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Опыт'
+                value={experience}
+                onChange={(e) => setExperience(e.target.value)}
+              ></Form.Control>
             </Form.Group>
 
             <Button type='submit' variant='primary'>
-              Update
+              Обновить
             </Button>
           </Form>
         )}

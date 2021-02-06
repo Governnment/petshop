@@ -24,6 +24,9 @@ import {
   USER_UPDATE_FAIL,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_REQUEST,
+  SELLER_REGISTER_REQUEST,
+  SELLER_REGISTER_SUCCESS,
+  SELLER_REGISTER_FAIL,
 } from '../constants/userConstants'
 import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
 
@@ -106,6 +109,66 @@ export const register = (name, email, password) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: USER_REGISTER_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
+
+export const newSellerRegister = (
+  login,
+  name,
+  email,
+  password,
+  socialMedia1,
+  socialMedia2,
+  socialMedia3,
+  description,
+  experience
+) => async (dispatch) => {
+  try {
+    dispatch({
+      type: SELLER_REGISTER_REQUEST,
+    })
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+
+    const { data } = await axios.post(
+      '/api/users',
+      {
+        login,
+        name,
+        email,
+        password,
+        socialMedia1,
+        socialMedia2,
+        socialMedia3,
+        description,
+        experience,
+      },
+      config
+    )
+
+    dispatch({
+      type: SELLER_REGISTER_SUCCESS,
+      payload: data,
+    })
+
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    })
+
+    localStorage.setItem('userInfo', JSON.stringify(data))
+  } catch (error) {
+    dispatch({
+      type: SELLER_REGISTER_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
