@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Route } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col } from 'react-bootstrap'
 import Product from '../components/Product'
@@ -10,9 +11,6 @@ import ProductCarousel from '../components/ProductCarousel'
 import { listProducts } from '../actions/productActions'
 
 const HomeScreen = ({ match, history }) => {
-  const [filter, setFilter] = useState('all')
-  const [productsFilter, setProductsFilter] = useState([])
-
   const keyword = match.params.keyword
   const pageNumber = match.params.pageNumber || 1
 
@@ -21,34 +19,14 @@ const HomeScreen = ({ match, history }) => {
   const productList = useSelector((state) => state.productList)
   const { loading, error, products, product, page, pages } = productList
 
-  const submitHandler = () => {
-    if (productsFilter) {
-      history.push(`/category/${product.name}`)
-    } else {
-      history.push('/')
-    }
-  }
-
   useEffect(() => {
     dispatch(listProducts(keyword, pageNumber))
   }, [dispatch, keyword, pageNumber])
 
-  useEffect(() => {
-    setProductsFilter(products)
-  }, [])
-  useEffect(() => {
-    setProductsFilter([])
-    const filtered = products.map((p) => ({
-      ...p,
-      filtered: p.name.includes(filter),
-    }))
-    setProductsFilter(filtered)
-  }, [filter])
-
   return (
     <>
       <div>
-        {/* {!keyword && <ProductCarousel />} */}
+        {!keyword && <ProductCarousel />}
         <h1 className='pt-4'>Котята</h1>
         {loading ? (
           <Loader />

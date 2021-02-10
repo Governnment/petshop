@@ -18,23 +18,26 @@ const getProducts = asyncHandler(async (req, res) => {
       }
     : {}
 
+  // let findArgs = {}
+
+  // console.log(req.body.filters)
+
+  // for (let key in req.body.filters) {
+  //   if (req.body.filters[key].length > 0) {
+  //     if (key === 'price') {
+  //     } else {
+  //       findArgs[key] = req.body.filter[key]
+  //     }
+  //   }
+  // }
+
   const count = await Product.countDocuments({ ...keyword })
   const products = await Product.find({ ...keyword })
     .limit(pageSize)
     .skip(pageSize * (page - 1))
+
   res.json({ products, page, pages: Math.ceil(count / pageSize) })
 })
-
-//? @desk     Seller.Fetch all producs
-//? @rout     GET /api/products
-//? @access   Public
-
-const getSellersProducts = asyncHandler(async (req, res) => {
-  const SellersProducts = await Product.find({ user: req.user._id })
-
-  res.json({ SellersProducts })
-})
-
 //? @desk     Fetch a product by ID
 //? @rout     GET /api/products>:id
 //? @access   Public
@@ -112,6 +115,7 @@ const createProductSeller = asyncHandler(async (req, res) => {
     name: 'Sample name',
     price: 0,
     user: req.user._id,
+    userId: req.user._id,
     image: '/images/sample.jpg',
     gender: 'Sample gender',
     category: 'Sample category',
@@ -256,6 +260,16 @@ const getTopProducts = asyncHandler(async (req, res) => {
   const products = await Product.find({}).sort({ rating: -1 }).limit(3)
 
   res.json(products)
+})
+
+//? @desk     Seller.Fetch all producs
+//? @rout     GET /api/products
+//? @access   Public
+
+const getSellersProducts = asyncHandler(async (req, res) => {
+  const SellersProducts = await Product.find({ user: req.userId })
+
+  res.json({ SellersProducts })
 })
 
 export {
