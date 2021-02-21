@@ -2,15 +2,26 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { Row, Col, Image, ListGroup, Card, Button, Form } from 'react-bootstrap'
+import {
+  Row,
+  Col,
+  Image,
+  ListGroup,
+  Card,
+  Button,
+  Form,
+  Carousel,
+} from 'react-bootstrap'
 import Rating from '../components/Rating'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Alert from '../components/Alert'
+import FormContainer from '../components/FormContainer'
 import {
   listProductDetails,
   deleteProduct,
-  createProductReview,
+  createSellerReview,
+  SellerUpdateProduct,
 } from '../actions/productActions'
 import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstans'
 import noCommentsImg from '../Images/illustrations/clip-no-messages.png'
@@ -19,11 +30,15 @@ const ProductScreen = ({ history, match }) => {
   const [qty, setQty] = useState(1)
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState('')
+  const [newPicReq, setNewPicReq] = useState(false)
 
   const dispatch = useDispatch()
 
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
+
+  const userDetails = useSelector((state) => state.userDetails)
+  const { user } = userDetails
 
   const productDetails = useSelector((state) => state.productDetails)
   const { loading, error, product } = productDetails
@@ -31,15 +46,15 @@ const ProductScreen = ({ history, match }) => {
   const productDelete = useSelector((state) => state.productDelete)
   const { success: successDelete } = productDelete
 
-  const productReviewCreate = useSelector((state) => state.productReviewCreate)
+  const sellerReviewCreate = useSelector((state) => state.sellerReviewCreate)
   const {
-    error: errorProductReview,
-    success: successProductReview,
-  } = productReviewCreate
+    error: errorSellerReview,
+    success: successSellerReview,
+  } = sellerReviewCreate
 
   useEffect(() => {
-    if (successProductReview) {
-      alert('Review Submitted!')
+    if (successSellerReview) {
+      //alert('Review Submitted!')
       setRating(0)
       setComment('')
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
@@ -50,7 +65,7 @@ const ProductScreen = ({ history, match }) => {
     if (successDelete) {
       history.push('/')
     }
-  }, [dispatch, history, match, successDelete, successProductReview])
+  }, [dispatch, history, match, successDelete, successSellerReview])
 
   const addToCartHandler = () => {
     history.push(`/cart/${match.params.id}?qty=${qty}`)
@@ -65,9 +80,18 @@ const ProductScreen = ({ history, match }) => {
   const submitHandler = (e) => {
     e.preventDefault()
     dispatch(
-      createProductReview(match.params.id, {
+      createSellerReview(match.params.id, {
         rating,
         comment,
+      })
+    )
+  }
+
+  const newPicReqHandler = (e) => {
+    e.preventDefault()
+    dispatch(
+      SellerUpdateProduct({
+        newPicReq,
       })
     )
   }
@@ -84,12 +108,56 @@ const ProductScreen = ({ history, match }) => {
         <>
           <Row>
             <Col md={6}>
-              <Image
+              <Carousel className='product-page-carousel'>
+                <Carousel.Item>
+                  <img
+                    className='d-block w-100'
+                    src={product.image}
+                    alt='First slide'
+                  />
+                  <Carousel.Caption>
+                    <h3>First slide label</h3>
+                    <p>
+                      Nulla vitae elit libero, a pharetra augue mollis interdum.
+                    </p>
+                  </Carousel.Caption>
+                </Carousel.Item>
+                <Carousel.Item>
+                  <img
+                    className='d-block w-100'
+                    src={product.image}
+                    alt='Second slide'
+                  />
+
+                  <Carousel.Caption>
+                    <h3>Second slide label</h3>
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    </p>
+                  </Carousel.Caption>
+                </Carousel.Item>
+                <Carousel.Item>
+                  <img
+                    className='d-block w-100'
+                    src={product.image}
+                    alt='Third slide'
+                  />
+
+                  <Carousel.Caption>
+                    <h3>Third slide label</h3>
+                    <p>
+                      Praesent commodo cursus magna, vel scelerisque nisl
+                      consectetur.
+                    </p>
+                  </Carousel.Caption>
+                </Carousel.Item>
+              </Carousel>
+              {/* <Image
                 src={product.image}
                 alt={product.name}
                 fluid
                 className='rounded-product-img'
-              />
+              /> */}
             </Col>
             <Col md={3}>
               <ListGroup variant='flush' className='product-details'>
@@ -98,8 +166,8 @@ const ProductScreen = ({ history, match }) => {
                 </ListGroup.Item>
                 <ListGroup.Item className='list-group-item-dark m-1'>
                   <Rating
-                    value={product.rating}
-                    text={`${product.numReviews} рейтинг продавца`}
+                    value={product.userRating}
+                    text={`${product.userNumReviews} рейтинг продавца`}
                   />
                 </ListGroup.Item>
                 <ListGroup.Item className='list-group-item-dark m-1 product-details-price'>
@@ -110,6 +178,32 @@ const ProductScreen = ({ history, match }) => {
                 </ListGroup.Item>
                 <ListGroup.Item className='list-group-item-dark m-1 product-details-description'>
                   Гендер: {product.gender}
+                </ListGroup.Item>
+                <ListGroup.Item className='list-group-item-dark m-1 product-details-description'>
+                  Дата рождения: {product.birthdate}
+                </ListGroup.Item>
+
+                {product.isPet ? (
+                  <ListGroup.Item className='list-group-item-dark m-1 product-details-description'>
+                    Питомец
+                  </ListGroup.Item>
+                ) : (
+                  <>
+                    <ListGroup.Item className='list-group-item-dark m-1 product-details-description'>
+                      Для разведения
+                    </ListGroup.Item>
+                    <ListGroup.Item className='list-group-item-dark m-1 product-details-description'>
+                      Цена для разведения: {product.breedingPrice}$
+                    </ListGroup.Item>
+                  </>
+                )}
+                <ListGroup.Item className='list-group-item-dark m-1 product-details-description'>
+                  Дата публикации:{' '}
+                  {product.createdAt && product.createdAt.substring(0, 10)}
+                </ListGroup.Item>
+                <ListGroup.Item className='list-group-item-dark m-1 product-details-description'>
+                  Дата последнего обновления: <br />{' '}
+                  {product.updatedAt && product.updatedAt.substring(0, 10)}
                 </ListGroup.Item>
               </ListGroup>
             </Col>
@@ -194,35 +288,88 @@ const ProductScreen = ({ history, match }) => {
                   </ListGroup.Item>
                 </ListGroup>
               )}
-            </Col>
-          </Row>
-          {/* <Row className='product-screen-review '>
-            <Col md={6}>
-              <h2>J</h2>
-              {product.reviews.length === 0 && (
+              {userInfo && userInfo.isBuyer && (
                 <>
-                  <img className='w-100' src={noCommentsImg} alt='review' />
-                  <Alert>No Reviews</Alert>
+                  <FormContainer>
+                    <Form onSubmit={newPicReqHandler}>
+                      <Form.Group controlId='newPicReq'>
+                        <Form.Label>Нужно свежее фото?</Form.Label>
+                        <Form.Check
+                          type='checkbox'
+                          label='Запросить'
+                          checked={newPicReq}
+                          onChange={(e) =>
+                            setNewPicReq(e.target.newPicReq, newPicReq)
+                          }
+                        ></Form.Check>
+                      </Form.Group>
+
+                      {newPicReq ? (
+                        <Form.Group controlId='breedingPrice'>
+                          <Form.Label>Комментарий</Form.Label>
+                          <Form.Control
+                            type='text'
+                            placeholder='Укажите цена в разведение'
+                            value={newPicReq}
+                            onChange={(e) => setNewPicReq(e.target.value)}
+                          ></Form.Control>
+                        </Form.Group>
+                      ) : null}
+                      <Button type='submit' variant='primary'>
+                        Добавить
+                      </Button>
+                    </Form>
+                  </FormContainer>
+
+                  <ListGroup className='py-3 product-screen-admin'>
+                    <ListGroup.Item className='list-group-item-dark'>
+                      {/* <LinkContainer to={`/admin/product/${product._id}/edit`}> */}
+                      <Button
+                        className='btn-block btn-edit'
+                        type='button'
+                        variant='warning'
+                        value={newPicReq === true}
+                        onClick={(e) => setNewPicReq(e.target.value)}
+                      >
+                        <i className='fas fa-pen'></i> Попросить обновить фото
+                      </Button>
+                      {newPicReq ? 'requested' : 'not requested'}
+                      {/* </LinkContainer> */}
+                    </ListGroup.Item>
+                  </ListGroup>
                 </>
               )}
-              <ListGroup variant='flush' className='list-group-item-dark'>
-                {product.reviews.map((review) => (
-                  <ListGroup.Item
-                    key={review._id}
-                    className='list-group-item-dark'
-                  >
-                    <strong>{review.name}</strong>
-                    <div className='my-2'>
-                      <Rating value={review.rating} />
-                    </div>
-                    <p>{review.createdAt.substring(0, 10)}</p>
-                    <p>{review.comment}</p>
-                  </ListGroup.Item>
+            </Col>
+          </Row>
+          <Row className='product-screen-review '>
+            <Col md={6}>
+              <h2 className='p-3'>Отзывы о продавце {product.userLogin}</h2>
+              {!product.userReviews ||
+                (product.userReviews.length === 0 && (
+                  <>
+                    <img className='w-100' src={noCommentsImg} alt='review' />
+                    <Alert>No Reviews</Alert>
+                  </>
                 ))}
+              <ListGroup variant='flush' className='list-group-item-dark'>
+                {product.userReviews &&
+                  product.userReviews.map((review) => (
+                    <ListGroup.Item
+                      key={review._id}
+                      className='list-group-item-dark'
+                    >
+                      <strong>{review.name}</strong>
+                      <div className='my-2'>
+                        <Rating value={review.rating} />
+                      </div>
+                      <p>{review.createdAt.substring(0, 10)}</p>
+                      <p>{review.comment}</p>
+                    </ListGroup.Item>
+                  ))}
                 <ListGroup.Item className='list-group-item-dark'>
-                  <h2>Write a Review</h2>
-                  {errorProductReview && (
-                    <Alert variant='danger'>{errorProductReview}</Alert>
+                  <h2>Write a Review </h2>
+                  {errorSellerReview && (
+                    <Alert variant='danger'>{errorSellerReview}</Alert>
                   )}
                   {userInfo ? (
                     <Form onSubmit={submitHandler}>
@@ -268,7 +415,6 @@ const ProductScreen = ({ history, match }) => {
               </ListGroup>
             </Col>
           </Row>
-         */}
         </>
       )}
     </>

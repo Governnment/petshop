@@ -1,21 +1,5 @@
 import mongoose from 'mongoose'
 
-const reviewSchema = mongoose.Schema(
-  {
-    name: { type: String, required: true },
-    rating: { type: Number, required: true },
-    comment: { type: String, required: true },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: 'User',
-    },
-  },
-  {
-    timestamps: true,
-  }
-)
-
 const productSchema = mongoose.Schema(
   {
     user: {
@@ -25,8 +9,16 @@ const productSchema = mongoose.Schema(
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
+      required: false,
       ref: 'User',
+    },
+    userLogin: {
+      type: String,
+      required: false,
+    },
+    type: {
+      type: String,
+      required: true,
     },
     name: {
       type: String,
@@ -36,11 +28,11 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    gender: {
+    parentImage: {
       type: String,
       required: true,
     },
-    category: {
+    gender: {
       type: String,
       required: true,
     },
@@ -48,26 +40,68 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    reviews: [reviewSchema],
-    rating: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    numReviews: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
+    // reviews: [reviewSchema],
+    // rating: {
+    //   type: Number,
+    //   required: true,
+    //   default: 0,
+    // },
+    // numReviews: {
+    //   type: Number,
+    //   required: true,
+    //   default: 0,
+    // },
     price: {
       type: Number,
       required: true,
       default: 0,
     },
-    countInStock: {
+    breedCode: {
+      type: String,
+      required: true,
+    },
+    colorCode: {
+      type: String,
+      required: true,
+    },
+    isPet: {
+      type: Boolean,
+      required: false,
+    },
+    breedingPrice: {
       type: Number,
       required: true,
       default: 0,
+    },
+    defects: {
+      type: String,
+      required: true,
+    },
+    weight: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    birthdate: {
+      type: String,
+      required: true,
+      default: '01.01.21',
+    },
+    vaccination: {
+      type: String,
+      required: true,
+    },
+    city: {
+      type: String,
+      required: true,
+    },
+    favorite: {
+      type: Boolean,
+      required: false,
+    },
+    newPicReq: {
+      type: Boolean,
+      required: false,
     },
   },
   {

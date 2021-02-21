@@ -26,6 +26,9 @@ import {
   SELLER_PRODUCT_CREATE_REQUEST,
   SELLER_PRODUCT_CREATE_SUCCESS,
   SELLER_PRODUCT_CREATE_FAIL,
+  CREATE_SELLER_REVIEW_REQUEST,
+  CREATE_SELLER_REVIEW_SUCCESS,
+  CREATE_SELLER_REVIEW_FAIL,
 } from '../constants/productConstans'
 
 export const productListReducer = (state = { products: [] }, action) => {
@@ -47,7 +50,7 @@ export const productListReducer = (state = { products: [] }, action) => {
 }
 
 export const productDetailsReducer = (
-  state = { product: { reviews: [] } },
+  state = { product: { userReviews: [], reviews: [] } },
   action
 ) => {
   switch (action.type) {
@@ -142,6 +145,21 @@ export const sellerProductCreateReducer = (state = {}, action) => {
     case SELLER_PRODUCT_CREATE_FAIL:
       return { loading: false, error: action.payload }
     case PRODUCT_CREATE_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+
+export const sellerReviewCreateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case CREATE_SELLER_REVIEW_REQUEST:
+      return { loading: true }
+    case CREATE_SELLER_REVIEW_SUCCESS:
+      return { loading: false, success: true }
+    case CREATE_SELLER_REVIEW_FAIL:
+      return { loading: false, error: action.payload }
+    case PRODUCT_CREATE_REVIEW_RESET:
       return {}
     default:
       return state

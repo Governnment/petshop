@@ -24,6 +24,7 @@ import {
   SELLER_PRODUCT_CREATE_REQUEST,
   SELLER_PRODUCT_CREATE_SUCCESS,
   SELLER_PRODUCT_CREATE_FAIL,
+  CREATE_SELLER_REVIEW_SUCCESS,
 } from '../constants/productConstans'
 
 export const listProducts = (keyword = '', pageNumber = '') => async (
@@ -35,7 +36,6 @@ export const listProducts = (keyword = '', pageNumber = '') => async (
     const { data } = await axios.get(
       `/api/products?keyword=${keyword}&pageNumber=${pageNumber}`
     )
-
     dispatch({
       type: PRODUCT_LIST_SUCCESS,
       payload: data,
@@ -294,9 +294,45 @@ export const sellerCreateProduct = (product) => async (dispatch, getState) => {
       },
     }
 
-    const { data } = await axios.post(`/api/products/seller`, product, config)
+    const { data } = await axios.post(
+      `/api/products/productSeller`,
+      product,
+      config
+    )
 
     dispatch({ type: SELLER_PRODUCT_CREATE_SUCCESS, payload: data })
+  } catch (error) {
+    dispatch({
+      type: SELLER_PRODUCT_CREATE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
+
+export const createSellerReview = (userId, review) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    dispatch({ type: SELLER_PRODUCT_CREATE_REQUEST })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    await axios.post(`/api/users/${userId}/sellerReview`, review, config)
+
+    dispatch({ type: CREATE_SELLER_REVIEW_SUCCESS })
   } catch (error) {
     dispatch({
       type: SELLER_PRODUCT_CREATE_FAIL,

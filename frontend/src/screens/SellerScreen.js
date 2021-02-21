@@ -1,14 +1,16 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Table, Button, Row, Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Alert from '../components/Alert'
 import Loader from '../components/Loader'
 import Paginate from '../components/Paginate'
+import axios from 'axios'
 import {
   listProducts,
   SellerDeleteProduct,
   createProduct,
+  sellerCreateProduct,
 } from '../actions/productActions'
 import { PRODUCT_CREATE_RESET } from '../constants/productConstans'
 
@@ -19,6 +21,7 @@ const SellerScreen = ({ history, match }) => {
 
   const productList = useSelector((state) => state.productList)
   const { loading, error, products, pages, page } = productList
+  const [sellerProducts, setSellerProducts] = useState([])
 
   const productDelete = useSelector((state) => state.productDelete)
   const {
@@ -27,13 +30,13 @@ const SellerScreen = ({ history, match }) => {
     success: successDelete,
   } = productDelete
 
-  const productCreate = useSelector((state) => state.productCreate)
+  const sellerProductCreate = useSelector((state) => state.sellerProductCreate)
   const {
     loading: loadingCreate,
     error: errorCreate,
     success: successCreate,
     product: createdProduct,
-  } = productCreate
+  } = sellerProductCreate
 
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
@@ -45,6 +48,24 @@ const SellerScreen = ({ history, match }) => {
       history.push('/login')
     }
 
+    const userInfoS = localStorage.getItem('userInfo')
+    const userDataS = JSON.parse(userInfoS)
+    let token
+    if (userDataS !== null) {
+      token = userDataS.token
+    }
+    axios
+      .get(`/api/products/seller/products`, {
+        headers: {
+          authorization: 'Bearer ' + token,
+        },
+      })
+      .then((response) => {
+        setSellerProducts(response.data.products)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
     if (successCreate) {
       history.push(`/seller/product/${createdProduct._id}/edit`)
     } else {
@@ -61,7 +82,7 @@ const SellerScreen = ({ history, match }) => {
   ])
 
   const createProductHandler = () => {
-    dispatch(createProduct())
+    dispatch(sellerCreateProduct())
   }
 
   const deleteHandler = (id) => {
@@ -86,6 +107,7 @@ const SellerScreen = ({ history, match }) => {
       {errorDelete && <Alert variant='danger'>{errorDelete}</Alert>}
       {loadingCreate && <Loader />}
       {errorCreate && <Alert variant='danger'>{errorCreate}</Alert>}
+      {products.length === 0 && <Alert>Your cart is empty</Alert>}
       {loading ? (
         <Loader />
       ) : error ? (
@@ -98,18 +120,16 @@ const SellerScreen = ({ history, match }) => {
                 <th>ID</th>
                 <th>Имя</th>
                 <th>Цена</th>
-                <th>Категория</th>
-                <th>Гендер</th>
+                <th>Запрос на фото</th>
               </tr>
             </thead>
             <tbody>
-              {products.map((product) => (
+              {sellerProducts.map((product) => (
                 <tr key={product._id}>
                   <td>{product._id}</td>
                   <td>{product.name}</td>
                   <td>$ {product.price}</td>
-                  <td>{product.category}</td>
-                  <td>{product.gender}</td>
+                  <td>{product.newPicReq}</td>
                   <td>
                     <LinkContainer to={`/seller/product/${product._id}/edit`}>
                       <Button variant='light' className='btn-sm fit'>

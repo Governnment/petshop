@@ -24,7 +24,6 @@ import SellerVerificationScreen from './screens/SellerVerificationScreen'
 import SellerScreen from './screens/SellerScreen'
 import SellerProductEditScreen from './screens/SellerProductEditScreen'
 import SellerProfileScreen from './screens/SellerProfileScreen'
-import AboutUs from './screens/AboutUs'
 
 const App = () => {
   return (
@@ -49,10 +48,6 @@ const App = () => {
           />
           <Route
             path='/seller/product/:id/edit'
-            component={ProductEditScreen}
-          />
-          <Route
-            path='/seller/product/:id/change'
             component={SellerProductEditScreen}
           />
           <Route path='/profile' component={ProfileScreen} />
@@ -82,7 +77,6 @@ const App = () => {
             component={HomeScreen}
             exact
           />
-          <Route path='/about-us' component={AboutUs} exact />
           <Route path='/' component={HomeScreen} exact />
         </Container>
       </main>

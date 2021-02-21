@@ -2,6 +2,8 @@ import asyncHandler from 'express-async-handler'
 import generateToken from '../utils/generateToken.js'
 import speakeasy from 'speakeasy'
 import User from '../models/userModel.js'
+import Product from '../models/productModel.js'
+import Review from '../models/reviewModel.js'
 
 //? @desk     Auth user & get token
 //? @rout     Post /api/users/login
@@ -27,6 +29,8 @@ const authUser = asyncHandler(async (req, res) => {
       description: user.description,
       experience: user.experience,
       token: generateToken(user._id),
+      rating: user.rating,
+      reviews: user.reviews,
     })
   } else {
     res.status(401)
@@ -49,6 +53,7 @@ const registerUser = asyncHandler(async (req, res) => {
     socialMedia3,
     description,
     experience,
+    rating,
   } = req.body
 
   const userExists = await User.findOne({ email })
@@ -68,6 +73,8 @@ const registerUser = asyncHandler(async (req, res) => {
     socialMedia3,
     description,
     experience,
+    rating,
+    reviews,
   })
 
   if (user) {
@@ -85,39 +92,14 @@ const registerUser = asyncHandler(async (req, res) => {
       description: user.description,
       experience: user.experience,
       token: generateToken(user._id),
+      rating: user.rating,
+      reviews: user.reviews,
     })
   } else {
     res.status(400)
     throw new Error('Invalid user data')
   }
 })
-
-//? @desk     Verify token and make secret perm
-//? @rout     POST /api/users/verify
-//? @access   Private
-
-// const verifyUser = asyncHandler(async (req, res) => {
-//   const { token } = req.body
-
-//   try {
-//     const user = await User.findById(req.params.id)
-//     const { base32: secret } = user.temp_secret
-
-//     const verified = speakeasy.totp.verify({
-//       secret,
-//       encoding: 'base32',
-//       token,
-//     })
-
-//     if (verified) {
-//       res.json({ verified: true })
-//     } else {
-//       res.json({ verified: false })
-//     }
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error finding user' })
-//   }
-// })
 
 //? @desk     Get user pofile
 //? @rout     GET /api/users/profile
@@ -127,6 +109,9 @@ const getUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id)
 
   if (user) {
+    const reviews = await Review.find({
+      sellerUserId: req.user._id
+    })
     res.json({
       _id: user._id,
       name: user.name,
@@ -134,7 +119,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
       isAdmin: user.isAdmin,
       isSeller: user.isSeller,
       isBuyer: user.isBuyer,
-      isVerifyed: user.isVerifyed,
+      reviews,
     })
   } else {
     res.status(404)
@@ -245,6 +230,58 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 })
 
+//? @desk     Create new seller review
+//? @rout     POST /api/users/:id/sellerReview
+//? @access   Private
+
+const createSellerReview = asyncHandler(async (req, res) => {
+  const { rating, comment } = req.body
+
+  const user = await User.findById(req.user._id)
+  const product = await Product.findById(req.params.id)
+
+  if (user) {
+    const alreadyReviewed = await Review.findOne({
+      user: req.user._id,
+      sellerUserId: product.userId,
+    })
+
+    if (alreadyReviewed) {
+      res.status(400)
+      throw new Error('Вы уже оставили отзыв')
+    }
+
+    const review = {
+      name: req.user.name,
+      rating: Number(rating),
+      comment,
+      user: req.user._id,
+      sellerUserId: product.userId,
+    }
+
+    await Review.create(review)
+
+    res.status(201).json({ message: 'Отзыв добавлен' })
+  } else {
+    res.status(404)
+    throw new Error('User not found')
+  }
+})
+
+//? @desk     Get seller reviews
+//? @rout     GET /api/user/sellerReviews
+//? @access   Private
+
+const getSellerReview = asyncHandler(async (req, res) => {
+  if (reviews) {
+    const user = await User.find({}).populate('rating', 'comment')
+    res.json(user)
+  } else {
+    res.status(404)
+    throw new Error('Review not found')
+  }
+})
+
 export {
   authUser,
   registerUser,
@@ -255,4 +292,6 @@ export {
   deleteUser,
   getUserById,
   updateUser,
+  createSellerReview,
+  getSellerReview,
 }
