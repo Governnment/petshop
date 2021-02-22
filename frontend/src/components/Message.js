@@ -12,7 +12,7 @@ const Message = ({ children }) => {
           alt='error'
         />
         <div className='errorText'>
-          <h4>Cap we got a problem here</h4>
+          <h4>Упс! У нас проблема</h4>
           <h3 className='errorLog'>{children}</h3>
         </div>
       </div>

@@ -1,15 +1,32 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Form, Button, Row, Col, ListGroup } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
+import {
+  Table,
+  Form,
+  Button,
+  Row,
+  Col,
+  ListGroup,
+  Image,
+} from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
+import Alert from '../components/Message'
 import Loader from '../components/Loader'
 import Rating from '../components/Rating'
-import { getUserDetails, updateUserProfile } from '../actions/userActions'
+import {
+  getUserDetails,
+  updateUserProfile,
+  addToCart,
+  removeFromCart
+} from '../actions/userActions'
 import { listMyOrders } from '../actions/orderActions'
 import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants'
 
-const ProfileScreen = ({ location, history }) => {
+const ProfileScreen = ({ match, location, history }) => {
+  const productId = match.params.id
+
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -30,8 +47,8 @@ const ProfileScreen = ({ location, history }) => {
   const userUpdateProfile = useSelector((state) => state.userUpdateProfile)
   const { success } = userUpdateProfile
 
-  const orderListMy = useSelector((state) => state.orderListMy)
-  const { loading: loadingOrders, error: errorOrders, orders } = orderListMy
+  const cart = useSelector((state) => state.cart)
+  const { cartItems } = cart
 
   useEffect(() => {
     if (!userInfo) {
@@ -48,6 +65,12 @@ const ProfileScreen = ({ location, history }) => {
     }
   }, [dispatch, history, userInfo, user, success])
 
+  useEffect(() => {
+    if (productId) {
+      dispatch(addToCart(productId))
+    }
+  }, [dispatch, productId])
+
   const submitHandler = (e) => {
     e.preventDefault()
     if (password !== confirmPassword) {
@@ -55,6 +78,10 @@ const ProfileScreen = ({ location, history }) => {
     } else {
       dispatch(updateUserProfile({ id: user._id, name, email, password }))
     }
+  }
+
+  const removeFromCartHandler = (id) => {
+    dispatch(removeFromCart(id))
   }
 
   return (
@@ -67,7 +94,7 @@ const ProfileScreen = ({ location, history }) => {
         {loading ? (
           <Loader />
         ) : error ? (
-          <Message variant='danger'>{error}</Message>
+          <Alert variant='danger'>{error}</Alert>
         ) : (
           <Form onSubmit={submitHandler}>
             <Form.Group controlId='name'>
@@ -116,72 +143,75 @@ const ProfileScreen = ({ location, history }) => {
           </Form>
         )}
       </Col>
-      {/* <Col md={9}>
-        <h2>My Orders</h2>
-        {loadingOrders ? (
-          <Loader />
-        ) : errorOrders ? (
-          <Message variant='danger'>{errorOrders}</Message>
-        ) : (
-          <Table striped bordered hover responsive className='table-sm'>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>DATE</th>
-                <th>TOTAL</th>
-                <th>PAID</th>
-                <th>DELIVERED</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order._id}>
-                  <td>{order._id}</td>
-                  <td>{order.createdAt.substring(0, 10)}</td>
-                  <td>{order.totalPrice}</td>
-                  <td>
-                    {order.isPaid ? (
-                      order.paidAt.substring(0, 10)
-                    ) : (
-                      <i className='fas fa-times' style={{ color: 'red' }}></i>
-                    )}
-                  </td>
-                  <td>
-                    {order.isDelivered ? (
-                      order.deliveredAt && order.deliveredAt.substring(0, 10)
-                    ) : (
-                      <i className='fas fa-times' style={{ color: 'red' }}></i>
-                    )}
-                  </td>
-                  <td>
-                    <LinkContainer to={`/order/${order._id}`}>
-                      <Button className='btn-sm border-radius' variant='light'>
-                        Details
-                      </Button>
-                    </LinkContainer>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        )}
-      </Col>*/}
-      <Col md={9}>
-        <h2>Отзывы</h2>
+      {user.isSeller ? (
+        <Col md={3}>
+          <h2>Отзывы</h2>
 
-        {user.reviews &&
-          user.reviews.map((review) => (
-            <ListGroup.Item key={review._id} className='list-group-item-dark'>
-              <strong>{review.name}</strong>
-              <div className='my-2'>
-                <Rating value={review.rating} />
-              </div>
-              <p>{review.createdAt.substring(0, 10)}</p>
-              <p>{review.comment}</p>
-            </ListGroup.Item>
-          ))}
-      </Col>
+          {user.reviews &&
+            user.reviews.map((review) => (
+              <ListGroup.Item key={review._id} className='list-group-item-dark'>
+                <strong>{review.name}</strong>
+                <div className='my-2'>
+                  <Rating value={review.rating} />
+                </div>
+                <p>{review.createdAt.substring(0, 10)}</p>
+                <p>{review.comment}</p>
+              </ListGroup.Item>
+            ))}
+        </Col>
+      ) : null}
+      {user.isBuyer ? (
+        <Col md={8}>
+          <h1>Избранное</h1>
+          {cartItems.length === 0 ? (
+            <Alert>
+              Список избранного пуст
+              <Link to='/' className='text-warning'>
+                <br />Найти любимца
+              </Link>
+            </Alert>
+          ) : (
+            <ListGroup variant='flush'>
+              {cartItems.map((item) => (
+                <ListGroup.Item
+                  key={item.product}
+                  className='list-group-item-dark my-1'
+                >
+                  <Row>
+                    <Col md={2}>
+                      <Image src={item.image} alt={item.name} fluid rounded />
+                    </Col>
+                    <Col md={3} className='cart-product-name'>
+                      <Link to={`/product/${item.product}`}>{item.name}</Link>
+                    </Col>
+                    <Col md={2} className='cart-product-price'>
+                      ${item.price}
+                    </Col>
+                    <Col md={2} className='cart-product-price'>
+                      <Rating
+                    value={item.rating}
+                    text={`${item.userLogin}`}
+                  />
+                    </Col>
+                    <Col md={2} sm={3} className='cart-remove-btn col-3'>
+                      <Button
+                        className='btn-light-custom'
+                        type='button'
+                        variant='light'
+                        onClick={() => removeFromCartHandler(item.product)}
+                      >
+                        <i className='fas fa-trash'></i>
+                      </Button>
+                    </Col>
+                    
+                  </Row>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          )}
+        </Col>
+      ) : null}
+      
     </Row>
   )
 }

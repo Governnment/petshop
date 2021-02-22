@@ -25,6 +25,7 @@ import SellerScreen from './screens/SellerScreen'
 import SellerProductEditScreen from './screens/SellerProductEditScreen'
 import SellerProfileScreen from './screens/SellerProfileScreen'
 import AboutUs from './screens/AboutUs'
+import WishlistScreen from './screens/WishlistScreen'
 
 const App = () => {
   return (
@@ -56,6 +57,8 @@ const App = () => {
             component={SellerProductEditScreen}
           />
           <Route path='/profile' component={ProfileScreen} />
+          <Route path='/wishlist/:id' component={WishlistScreen} />
+
           <Route path='/product/:id' component={ProductScreen} />
           {/* <Route path='/cart/:id?' component={CartScreen} /> */}
           <Route path='/admin/userlist' component={UserListScreen} />

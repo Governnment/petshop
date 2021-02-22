@@ -29,10 +29,10 @@ import {
   SELLER_REGISTER_REQUEST,
   SELLER_REGISTER_SUCCESS,
   SELLER_REGISTER_FAIL,
-  // CREATE_SELLER_REVIEW_REQUEST,
-  // CREATE_SELLER_REVIEW_SUCCESS,
-  // CREATE_SELLER_REVIEW_FAIL,
+  WISH_LIST_REMOVE_ITEM,
+  WISH_LIST_ADD_ITEM,
 } from '../constants/userConstants'
+import{CART_ADD_ITEM, CART_REMOVE_ITEM} from '../constants/cartConstants'
 
 export const userLoginReducer = (state = {}, action) => {
   switch (action.type) {
@@ -154,17 +154,37 @@ export const userUpdateReducer = (state = { user: {} }, action) => {
   }
 }
 
-// export const sellerReviewCreateReducer = (state = {}, action) => {
-//   switch (action.type) {
-//     case CREATE_SELLER_REVIEW_REQUEST:
-//       return { loading: true }
-//     case CREATE_SELLER_REVIEW_SUCCESS:
-//       return { loading: false, success: true }
-//     case CREATE_SELLER_REVIEW_FAIL:
-//       return { loading: false, error: action.payload }
-//     case PRODUCT_CREATE_REVIEW_RESET:
-//       return {}
-//     default:
-//       return state
-//   }
-// }
+export const cartReducer = (
+  state = { cartItems: [], shippingAddress: {} },
+  action
+) => {
+  switch (action.type) {
+    case CART_ADD_ITEM:
+      const item = action.payload
+
+      const existItem = state.cartItems.find((x) => x.product === item.product)
+
+      if (existItem) {
+        return {
+          ...state,
+          cartItems: state.cartItems.map((x) =>
+            x.product === existItem.product ? item : x
+          ),
+        }
+      } else {
+        return {
+          ...state,
+          cartItems: [...state.cartItems, item],
+        }
+      }
+
+    case CART_REMOVE_ITEM:
+      return {
+        ...state,
+        cartItems: state.cartItems.filter((x) => x.product !== action.payload),
+      }
+
+    default:
+      return state
+  }
+}

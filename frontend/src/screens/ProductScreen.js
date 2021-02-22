@@ -23,6 +23,7 @@ import {
   createSellerReview,
   SellerUpdateProduct,
 } from '../actions/productActions'
+import { addToCart } from '../actions/cartActions'
 import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstans'
 import noCommentsImg from '../Images/illustrations/clip-no-messages.png'
 
@@ -52,6 +53,13 @@ const ProductScreen = ({ history, match }) => {
     success: successSellerReview,
   } = sellerReviewCreate
 
+  const { cartItems } = useSelector((state) => state.cart)
+
+
+  const addToWishListHandler = () => {
+    history.push(`/wishlist/${match.params.id}`)
+  }
+
   useEffect(() => {
     if (successSellerReview) {
       //alert('Review Submitted!')
@@ -66,10 +74,6 @@ const ProductScreen = ({ history, match }) => {
       history.push('/')
     }
   }, [dispatch, history, match, successDelete, successSellerReview])
-
-  const addToCartHandler = () => {
-    history.push(`/cart/${match.params.id}?qty=${qty}`)
-  }
 
   const deleteHandler = (id) => {
     if (window.confirm('Are you sure?')) {
@@ -253,18 +257,15 @@ const ProductScreen = ({ history, match }) => {
                     </ListGroup.Item>
                   )} */}
 
-              {/* <ListGroup.Item className='list-group-item-dark'>
-                    <Button
-                      onClick={addToCartHandler}
-                      className='btn-block'
-                      type='button'
-                      disabled={product.countInStock === 0}
-                    >
-                      Add To Cart
-                    </Button>
-                  </ListGroup.Item> 
-                </ListGroup>
-              </Card>*/}
+              <ListGroup.Item className='list-group-item-dark'>
+                <Button
+                  onClick={addToWishListHandler}
+                  className='btn-block'
+                  type='button'
+                >
+                  Добавить в избаранное
+                </Button>
+              </ListGroup.Item>
               {userInfo && userInfo.isAdmin && (
                 <ListGroup className='py-3 product-screen-admin'>
                   <ListGroup.Item className='list-group-item-dark'>

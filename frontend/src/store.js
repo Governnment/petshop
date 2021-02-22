@@ -83,11 +83,18 @@ const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
   ? JSON.parse(localStorage.getItem('shippingAddress'))
   : {}
 
+// const wishListItemsFromStorage = localStorage.getItem('wishListItems')
+//   ? JSON.parse(localStorage.getItem('wishListItems'))
+//   : []
+
 const initialState = {
   cart: {
     cartItems: cartItemsFromStorage,
     shippingAddress: shippingAddressFromStorage,
   },
+  // wishList: {
+  //   wishListItems: wishListItemsFromStorage,
+  // },
   userLogin: { userInfo: userInfoFromStorage },
 }
 

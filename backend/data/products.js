@@ -16,6 +16,7 @@ const products = [
     type: 'кот',
     isPet: true,
     birthdate: '05.02.21',
+    userId: '602f953230c1102d5438b9f4'
   },
   {
     name: 'Rafti',
@@ -34,6 +35,7 @@ const products = [
     isPet: false,
     breedingPrice: 1300,
     birthdate: '25.01.21',
+    userId: '602f953230c1102d5438b9f4',
   },
   {
     name: 'Moonzy',
@@ -51,6 +53,7 @@ const products = [
     type: 'кот',
     isPet: true,
     birthdate: '15.02.21',
+    userId: '602f953230c1102d5438b9f4',
   },
 ]
 

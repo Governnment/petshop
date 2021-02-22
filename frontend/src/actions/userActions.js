@@ -27,8 +27,10 @@ import {
   SELLER_REGISTER_REQUEST,
   SELLER_REGISTER_SUCCESS,
   SELLER_REGISTER_FAIL,
+  WISH_LIST_ADD_ITEM,
 } from '../constants/userConstants'
 import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
+import { CART_ADD_ITEM, CART_REMOVE_ITEM } from '../constants/cartConstants'
 
 export const login = (email, password) => async (dispatch) => {
   try {
@@ -67,7 +69,7 @@ export const login = (email, password) => async (dispatch) => {
 
 export const logout = () => (dispatch) => {
   localStorage.removeItem('userInfo')
-  localStorage.removeItem('cartItems')
+
   localStorage.removeItem('shippingAddress')
   localStorage.removeItem('paymentMethod')
   dispatch({ type: USER_LOGOUT })
@@ -367,45 +369,31 @@ export const updateUser = (user) => async (dispatch, getState) => {
   }
 }
 
-// export const createSellerReview = (user) => async (dispatch, getState) => {
-//   try {
-//     dispatch({
-//       type: USER_UPDATE_REQUEST,
-//     })
+export const addToCart = (id, qty) => async (dispatch, getState) => {
+  const { data } = await axios.get(`/api/products/${id}`)
 
-//     const {
-//       userLogin: { userInfo },
-//     } = getState()
+  dispatch({
+    type: CART_ADD_ITEM,
+    payload: {
+      product: data._id,
+      name: data.name,
+      image: data.image,
+      price: data.price,
+      city: data.city,
+      rating: data.userRating,
+      userLogin: data.userLogin,
+      qty,
+    },
+  })
 
-//     const config = {
-//       headers: {
-//         'Content-Type': 'application/json',
-//         Authorization: `Bearer ${userInfo.token}`,
-//       },
-//     }
+  localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems))
+}
 
-//     const { data } = await axios.put(
-//       `/api/users/${userId}/sellerReview`,
-//       user,
-//       config
-//     )
+export const removeFromCart = (id) => (dispatch, getState) => {
+  dispatch({
+    type: CART_REMOVE_ITEM,
+    payload: id,
+  })
 
-//     dispatch({ type: USER_UPDATE_SUCCESS })
-
-//     dispatch({ type: USER_DETAILS_SUCCESS, payload: data })
-
-//     dispatch({ type: USER_DETAILS_RESET })
-//   } catch (error) {
-//     const message =
-//       error.response && error.response.data.message
-//         ? error.response.data.message
-//         : error.message
-//     if (message === 'Not authorized, token failed') {
-//       dispatch(logout())
-//     }
-//     dispatch({
-//       type: USER_UPDATE_FAIL,
-//       payload: message,
-//     })
-//   }
-// }
+  localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems))
+}
