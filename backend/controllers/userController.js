@@ -47,16 +47,19 @@ const registerUser = asyncHandler(async (req, res) => {
     login,
     name,
     email,
+    contact,
+    kennel,
+    city,
+    breeds,
     password,
     socialMedia1,
     socialMedia2,
     socialMedia3,
     description,
     experience,
-    rating,
   } = req.body
 
-  const userExists = await User.findOne({ email })
+  const userExists = await User.findOne({ email, login })
 
   if (userExists) {
     res.status(400)
@@ -67,14 +70,16 @@ const registerUser = asyncHandler(async (req, res) => {
     login,
     name,
     email,
+    contact,
+    kennel,
+    city,
+    breeds,
     password,
     socialMedia1,
     socialMedia2,
     socialMedia3,
     description,
     experience,
-    rating,
-    reviews,
   })
 
   if (user) {
@@ -83,6 +88,10 @@ const registerUser = asyncHandler(async (req, res) => {
       login: user.login,
       name: user.name,
       email: user.email,
+      contact: user.contact,
+      kennel: user.kennel,
+      city: user.city,
+      breeds: user.breeds,
       isAdmin: user.isAdmin,
       isSeller: user.isSeller,
       isBuyer: user.isBuyer,
@@ -92,8 +101,6 @@ const registerUser = asyncHandler(async (req, res) => {
       description: user.description,
       experience: user.experience,
       token: generateToken(user._id),
-      rating: user.rating,
-      reviews: user.reviews,
     })
   } else {
     res.status(400)

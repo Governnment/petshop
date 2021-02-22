@@ -17,6 +17,26 @@ const userSchema = mongoose.Schema(
       required: true,
       unique: true,
     },
+    contact: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    kennel: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    city: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    breeds: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     password: {
       type: String,
       required: true,

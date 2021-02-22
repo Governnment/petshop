@@ -14,6 +14,10 @@ const UserEditScreen = ({ match, history }) => {
   const [login, setLogin] = useState('')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [contact, setContact] = useState('')
+  const [kennel, setKennel] = useState('')
+  const [city, setCity] = useState('')
+  const [breeds, setBreeds] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
   const [isSeller, setIsSeller] = useState(false)
   const [isBuyer, setIsBuyer] = useState(false)
@@ -46,6 +50,10 @@ const UserEditScreen = ({ match, history }) => {
         setLogin(user.login)
         setName(user.name)
         setEmail(user.email)
+        setContact(user.contact)
+        setKennel(user.kennel)
+        setCity(user.city)
+        setBreeds(user.breeds)
         setIsAdmin(user.isAdmin)
         setIsSeller(user.isSeller)
         setIsBuyer(user.isBuyer)
@@ -66,6 +74,10 @@ const UserEditScreen = ({ match, history }) => {
         login,
         name,
         email,
+        contact,
+        kennel,
+        city,
+        breeds,
         isAdmin,
         isSeller,
         isBuyer,
@@ -93,13 +105,13 @@ const UserEditScreen = ({ match, history }) => {
           <Alert variant='danger'>{error}</Alert>
         ) : (
           <Form onSubmit={submitHandler}>
-            <Form.Group controlId='name'>
+            <Form.Group controlId='login'>
               <Form.Label>Логин</Form.Label>
               <Form.Control
                 type='text'
-                placeholder='Enter name'
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                placeholder='Редактировать логин'
+                value={login}
+                onChange={(e) => setLogin(e.target.value)}
               ></Form.Control>
             </Form.Group>
 
@@ -120,6 +132,46 @@ const UserEditScreen = ({ match, history }) => {
                 placeholder='Введите почту'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId='contact'>
+              <Form.Label>Как с вами связаться?</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Укажите контаты'
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId='kennel'>
+              <Form.Label>Название питомника</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Укажите название питомника'
+                value={kennel}
+                onChange={(e) => setKennel(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId='city'>
+              <Form.Label>Города разведения</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Укажите города разведения'
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId='breeds'>
+              <Form.Label>Породы, которые вы разводите</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Укажите породы, которые вы разводите'
+                value={breeds}
+                onChange={(e) => setBreeds(e.target.value)}
               ></Form.Control>
             </Form.Group>
 

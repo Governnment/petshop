@@ -12,6 +12,10 @@ const RegisterScreen = ({ location, history }) => {
   const [login, setLogin] = useState('')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [contact, setContact] = useState('')
+  const [kennel, setKennel] = useState('')
+  const [city, setCity] = useState('')
+  const [breeds, setBreeds] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [socialMedia1, setSocialMedia1] = useState('')
@@ -42,6 +46,10 @@ const RegisterScreen = ({ location, history }) => {
           login,
           name,
           email,
+          contact,
+          kennel,
+          city,
+          breeds,
           password,
           socialMedia1,
           socialMedia2,
@@ -73,10 +81,10 @@ const RegisterScreen = ({ location, history }) => {
         </Form.Group>
 
         <Form.Group controlId='name'>
-          <Form.Label>Имя</Form.Label>
+          <Form.Label>ФИО</Form.Label>
           <Form.Control
             type='name'
-            placeholder='Введите ваше имя'
+            placeholder='Введите ваше ФИО'
             value={name}
             onChange={(e) => setName(e.target.value)}
           ></Form.Control>
@@ -89,6 +97,46 @@ const RegisterScreen = ({ location, history }) => {
             placeholder='Введите ваш email'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+
+        <Form.Group controlId='contact'>
+          <Form.Label>Как с вами связаться?</Form.Label>
+          <Form.Control
+            type='text'
+            placeholder='Укажите контаты'
+            value={contact}
+            onChange={(e) => setContact(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+
+        <Form.Group controlId='kennel'>
+          <Form.Label>Название питомника</Form.Label>
+          <Form.Control
+            type='text'
+            placeholder='Укажите название питомника'
+            value={kennel}
+            onChange={(e) => setKennel(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+
+        <Form.Group controlId='city'>
+          <Form.Label>Города разведения</Form.Label>
+          <Form.Control
+            type='text'
+            placeholder='Укажите города разведения'
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+
+        <Form.Group controlId='breeds'>
+          <Form.Label>Породы, которые вы разводите</Form.Label>
+          <Form.Control
+            type='text'
+            placeholder='Укажите породы, которые вы разводите'
+            value={breeds}
+            onChange={(e) => setBreeds(e.target.value)}
           ></Form.Control>
         </Form.Group>
 
